@@ -27,7 +27,9 @@ module.exports.authenticateUser = async (req, res) => {
       message: "Please Enter email address and Password",
     });
   }
-  const user = await userSchema.findOne({ username }).select("password");
+  const user = await userSchema
+    .findOne({ username: username })
+    .select(["password", "name", "profilePic"]);
   if (!user) {
     res.status(401).json({
       success: false,
@@ -38,7 +40,7 @@ module.exports.authenticateUser = async (req, res) => {
     if (isMatch) {
       res.status(200).json({
         success: true,
-        // user,
+        user,
       });
     } else {
       res.status(400).json({
