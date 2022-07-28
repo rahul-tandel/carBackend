@@ -19,3 +19,36 @@ module.exports.postBlog = async (req, res) => {
     console.log(error);
   }
 };
+
+module.exports.editBlog = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const body = req.body;
+    const updatedBlog = await blogSchema.findByIdAndUpdate(id, body, {
+      new: true,
+    });
+    res.status(200).json(updatedBlog);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+module.exports.deleteBlog = async (req, res) => {
+  try {
+    const { id } = req.params;
+    await blogSchema.findByIdAndDelete(id);
+    res.status(200).json({ success: true });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+module.exports.getSingleBlog = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const blog = await blogSchema.findOne({ _id: id });
+    res.status(200).json(blog);
+  } catch (error) {
+    console.log(error);
+  }
+};

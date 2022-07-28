@@ -13,6 +13,13 @@ const blogSchema = mongoose.Schema({
     type: String,
     required: true,
   },
+  summary: {
+    type: String,
+    required: true,
+  },
+  blogImage: {
+    type: String,
+  },
 });
 
 const blogModel = mongoose.model("blog", blogSchema);

@@ -7,3 +7,7 @@ router.route("/").get(getUser);
 router.route("/").post(postUser);
 router.route("/login").post(authenticateUser);
 module.exports = router;
+
+// router.get('/',(req,res) => {
+
+// })
