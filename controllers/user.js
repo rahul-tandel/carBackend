@@ -2,7 +2,8 @@ const userSchema = require("../db/models/user");
 
 module.exports.getUser = async (req, res) => {
   try {
-    const users = await userSchema.find();
+    const { id } = req.params;
+    const users = await userSchema.find({ _id: id });
     res.status(200).json(users);
   } catch (error) {
     console.log(error);
@@ -29,7 +30,7 @@ module.exports.authenticateUser = async (req, res) => {
   }
   const user = await userSchema
     .findOne({ username: username })
-    .select(["password", "name", "profilePic"]);
+    .select(["password"]);
   if (!user) {
     res.status(401).json({
       success: false,
@@ -37,10 +38,11 @@ module.exports.authenticateUser = async (req, res) => {
     });
   } else {
     const isMatch = await user.matchPassword(password);
+    const userData = await userSchema.find({ username: username });
     if (isMatch) {
       res.status(200).json({
         success: true,
-        user,
+        user: userData,
       });
     } else {
       res.status(400).json({
@@ -48,5 +50,27 @@ module.exports.authenticateUser = async (req, res) => {
         message: "Invalid credentials",
       });
     }
+  }
+};
+
+module.exports.updateUser = async (req, res) => {
+  const { id } = req.params;
+  const body = req.body;
+  try {
+    const updatedUser = await userSchema.findByIdAndUpdate(id, body, {
+      new: true,
+    });
+    res.status(200).json(updatedUser);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+module.exports.getAllUsers = async (req, res) => {
+  try {
+    const users = await userSchema.find();
+    res.status(200).json(users);
+  } catch (error) {
+    console.log(error);
   }
 };

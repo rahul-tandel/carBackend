@@ -1,4 +1,5 @@
 const blogSchema = require("../db/models/blog");
+const userSchema = require("../db/models/user");
 
 module.exports.getBlog = async (req, res) => {
   try {
@@ -50,5 +51,33 @@ module.exports.getSingleBlog = async (req, res) => {
     res.status(200).json(blog);
   } catch (error) {
     console.log(error);
+  }
+};
+
+module.exports.getAllBlogs = async (req, res) => {
+  try {
+    const blogs = await blogSchema.find();
+    res.status(200).json(blogs);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+module.exports.getBlogCard = async (req, res) => {
+  try {
+    const blogs = await blogSchema.find().lean();
+    const data = [];
+    let shuffledBlogs = blogs.sort(() => 0.5 - Math.random());
+    shuffledBlogs = shuffledBlogs.slice(0, 6);
+    for (let a of shuffledBlogs) {
+      const user = await userSchema.findById(a.user_id);
+      a.profilePic = user.profilePic;
+      data.push(a);
+    }
+
+    res.status(200).json(data);
+  } catch (error) {
+    console.log(error);
+    res.send("Something went wrong");
   }
 };
